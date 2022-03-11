@@ -48,6 +48,6 @@ extension DataProvider: UITableViewDataSource {
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return Section.allCases.count
+        return Section.allCases.count   
     }
 }
