@@ -168,7 +168,7 @@
 				5A8A47AB27D8F27E00890625 /* Controller */,
 				5A8A47A527D23E4300890625 /* Manager */,
 				5A8A479E27D12B2600890625 /* Model */,
-				5A8A477C27D1255A00890625 /* ToDoAppTests.swift */,
+				5AE3F64927E8EB64009C49CF /* Supporting Files */,
 			);
 			path = ToDoAppTests;
 			sourceTree = "<group>";
@@ -259,6 +259,14 @@
 				5A0706AF27E1E8160070FC1F /* NewTaskViewControllerTests.swift */,
 			);
 			path = Controller;
+			sourceTree = "<group>";
+		};
+		5AE3F64927E8EB64009C49CF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				5A8A477C27D1255A00890625 /* ToDoAppTests.swift */,
+			);
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
