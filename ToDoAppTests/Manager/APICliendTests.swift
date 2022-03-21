@@ -9,7 +9,7 @@ import XCTest
 @testable import ToDoApp
 
 class APICliendTests: XCTestCase {
-
+    
     var sut: APIClient!
     var mockURLSession: MockURLSession!
     
@@ -18,7 +18,7 @@ class APICliendTests: XCTestCase {
         sut = APIClient()
         sut.urlSession = mockURLSession
     }
-
+    
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
@@ -27,7 +27,7 @@ class APICliendTests: XCTestCase {
         let completionHandler = {(token: String?, error: Error?) in }
         sut.login(withName: "name", password: "%qwerty", completionHandler: completionHandler)
     }
-
+    
     func testLoginUsesCorrectHost() {
         userLogin()
         XCTAssertEqual(mockURLSession.urlComponents?.host, "todoapp.com")
@@ -56,13 +56,63 @@ class APICliendTests: XCTestCase {
         sut.urlSession = mockURLSession
         let tokenExpectation = expectation(description: "Token expectation")
         
-        var coughtToken: String?
+        var caughtToken: String?
         sut.login(withName: "login", password: "password") { token, error in
-            coughtToken = token
+            caughtToken = token
             tokenExpectation.fulfill()
         }
         waitForExpectations(timeout: 1) { _ in
-            XCTAssertEqual(coughtToken, "tokenString")
+            XCTAssertEqual(caughtToken, "tokenString")
+        }
+    }
+    
+    func testLoginInvalidJSONReturnError() {
+        mockURLSession = MockURLSession(data: Data(), urlResponse: nil, responseError: nil)
+        sut.urlSession = mockURLSession
+        let errorExpentation = expectation(description: "Error expectation")
+        
+        var caughtEror: Error?
+        sut.login(withName: "login", password: "password") { _, error in
+            caughtEror = error
+            errorExpentation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 1) { _ in
+            XCTAssertNotNil(caughtEror)
+        }
+    }
+    
+    func testLoginWhenDataIsNillJSONReturnError() {
+        mockURLSession = MockURLSession(data: nil, urlResponse: nil, responseError: nil)
+        sut.urlSession = mockURLSession
+        let errorExpentation = expectation(description: "Error expectation")
+        
+        var caughtError: Error?
+        sut.login(withName: "login", password: "password") { _, error in
+            caughtError = error
+            errorExpentation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 1) { _ in
+            XCTAssertNotNil(caughtError)
+        }
+    }
+    
+    func testLoginWhenResponseErrorReturnsError() {
+        let jsonDataStub = "{\"token\": \"tokenString\"}".data(using: .utf8)
+        let error = NSError(domain: "Server error", code: 404, userInfo: nil)
+        mockURLSession = MockURLSession(data: jsonDataStub, urlResponse: nil, responseError: error)
+        sut.urlSession = mockURLSession
+        let errorExpentation = expectation(description: "Error expectation")
+        
+        var caughtError: Error?
+        sut.login(withName: "login", password: "password") { _, error in
+            caughtError = error
+            errorExpentation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 1) { _ in
+            XCTAssertNotNil(caughtError)
         }
     }
 }
@@ -86,7 +136,7 @@ extension APICliendTests {
         
         func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
             self.url = url
-//            return URLSession.shared.dataTask(with: url)
+            //            return URLSession.shared.dataTask(with: url)
             mockDataTask.completionHandler = completionHandler
             return mockDataTask
         }
