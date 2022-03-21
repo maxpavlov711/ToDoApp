@@ -11,7 +11,7 @@ import XCTest
 class TaskListViewControllerTests: XCTestCase {
     
     var sut: TaskListViewController!
-
+    
     override func setUpWithError() throws {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: String(describing: TaskListViewController.self))
@@ -19,7 +19,7 @@ class TaskListViewControllerTests: XCTestCase {
         
         sut.loadViewIfNeeded()
     }
-
+    
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
@@ -53,10 +53,11 @@ class TaskListViewControllerTests: XCTestCase {
     func testAddNewTaskPresentsNewTaskViewController() {
         XCTAssertNil(sut.presentedViewController)
         
-        guard let newTaskButton = sut.navigationItem.rightBarButtonItem, let action = newTaskButton.action else {
-            XCTFail()
-            return
-        }
+        guard let newTaskButton = sut.navigationItem.rightBarButtonItem,
+              let action = newTaskButton.action else {
+                  XCTFail()
+                  return
+              }
         
         UIApplication.shared.keyWindow?.rootViewController = sut
         sut.performSelector(onMainThread: action, with: newTaskButton, waitUntilDone: true)
@@ -65,5 +66,24 @@ class TaskListViewControllerTests: XCTestCase {
         
         let newTaskViewController = sut.presentedViewController as! NewTaskViewController
         XCTAssertNotNil(newTaskViewController.titleTextField)
+    }
+    
+    func testSharesSameTaskManagerWithNewTaskVC() {
+        XCTAssertNil(sut.presentedViewController)
+        
+        guard let newTaskButton = sut.navigationItem.rightBarButtonItem,
+              let action = newTaskButton.action else {
+                  XCTFail()
+                  return
+              }
+        
+        UIApplication.shared.keyWindow?.rootViewController = sut
+        sut.performSelector(onMainThread: action, with: newTaskButton, waitUntilDone: true)
+        XCTAssertNotNil(sut.presentedViewController)
+        XCTAssertTrue(sut.presentedViewController is NewTaskViewController)
+        
+        let newTaskViewController = sut.presentedViewController as! NewTaskViewController
+        XCTAssertNotNil(sut.dataProvider.taskManager)
+        XCTAssertTrue(newTaskViewController.taskManager === sut.dataProvider.taskManager)
     }
 }
