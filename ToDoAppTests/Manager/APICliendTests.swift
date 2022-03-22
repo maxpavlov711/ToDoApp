@@ -14,6 +14,7 @@ class APICliendTests: XCTestCase {
     var mockURLSession: MockURLSession!
     
     override func setUpWithError() throws {
+        try super.setUpWithError()
         mockURLSession = MockURLSession(data: nil, urlResponse: nil, responseError: nil)
         sut = APIClient()
         sut.urlSession = mockURLSession
@@ -21,6 +22,7 @@ class APICliendTests: XCTestCase {
     
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+        try super.tearDownWithError()
     }
     
     func userLogin() {
