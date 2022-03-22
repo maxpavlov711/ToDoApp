@@ -13,7 +13,7 @@ class TaskListViewControllerTests: XCTestCase {
     var sut: TaskListViewController!
     
     override func setUpWithError() throws {
-        try super.setUpWithError()
+        //        try super.setUpWithError()
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: String(describing: TaskListViewController.self))
         sut = vc as? TaskListViewController
@@ -85,6 +85,46 @@ class TaskListViewControllerTests: XCTestCase {
         
         XCTAssertTrue((sut.tableView as! MockTableView).isRealoded)
     }
+    
+    func testTappingCellSendsNotification() {
+        let task = Task(title: "Foo")
+        sut.dataProvider.taskManager!.add(task: task)
+        
+        expectation(forNotification: NSNotification.Name(rawValue: "DidSelectRow notification"), object: nil) { notification -> Bool in
+            
+            guard let taskFromNotification = notification.userInfo?["task"] as? Task else {
+                return false
+            }
+            
+            return task == taskFromNotification
+        }
+        
+        let tableView = sut.tableView
+        tableView?.delegate?.tableView!(tableView!, didSelectRowAt: IndexPath(row: 0, section: 0))
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+    
+    func testSelectedCellNotificationPushesDetailVC() {
+        let mockNavigationController = MockNavigaionController(rootViewController: sut)
+        UIApplication.shared.keyWindow?.rootViewController = mockNavigationController
+        
+        sut.loadViewIfNeeded()
+        let task = Task(title: "Foo")
+        let task1 = Task(title: "Bar")
+        sut.dataProvider.taskManager?.add(task: task)
+        sut.dataProvider.taskManager?.add(task: task1)
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "DidSelectRow notification"), object: self, userInfo: ["task" : task1])
+        
+        guard let detailViewController = mockNavigationController.pushedViewController as? DetailViewController else {
+            XCTFail()
+            return
+        }
+        
+        detailViewController.loadViewIfNeeded()
+        XCTAssertNotNil(detailViewController.titleLabel)
+        XCTAssertTrue(detailViewController.task == task1)
+    }
 }
 
 extension TaskListViewControllerTests {
@@ -92,6 +132,17 @@ extension TaskListViewControllerTests {
         var isRealoded = false
         override func reloadData() {
             isRealoded = true
+        }
+    }
+}
+
+extension TaskListViewControllerTests {
+    class MockNavigaionController: UINavigationController {
+        var pushedViewController: UIViewController?
+        
+        override func pushViewController(_ viewController: UIViewController, animated: Bool) {
+            pushedViewController = viewController
+            super.pushViewController(viewController, animated: animated)
         }
     }
 }
