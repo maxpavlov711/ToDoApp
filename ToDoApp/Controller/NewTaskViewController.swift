@@ -46,5 +46,6 @@ class NewTaskViewController: UIViewController {
             let task = Task(title: titleSting!, description: descriptionString, date: date, location: location)
             self.taskManager.add(task: task)
         }
+        dismiss(animated: true, completion: nil)
     }
 }
