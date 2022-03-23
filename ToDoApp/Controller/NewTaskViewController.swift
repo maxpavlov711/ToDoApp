@@ -51,4 +51,9 @@ class NewTaskViewController: UIViewController {
             }
         }
     }
+    
+    @IBAction func cancel(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+    }
+    
 }
