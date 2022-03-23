@@ -45,6 +45,7 @@
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HAd-eD-AbV">
                                                             <rect key="frame" x="0.0" y="46.5" width="374" height="18.5"/>
+                                                            <accessibility key="accessibilityConfiguration" identifier="date"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
@@ -81,6 +82,7 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <accessibility key="accessibilityConfiguration" identifier="mainView"/>
                     </view>
                     <navigationItem key="navigationItem" id="AUc-GP-qgP">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="tre-p2-AmI">
